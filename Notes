@@ -16,21 +16,3 @@ on mettra des beneficiaires dans des Taches qui ont déja été validées.
 avec tes super codes j'ai fait une classe TacheConfirmee(avec beneficiaire+ liste de participants et j'ai modifié un peu partout)
 
 Critique: On néglige le temps dans ce cas là, car la tache passe directement en tache confirmé sans prendre en compte du temps ( pas assez de temps de le faire)
-
-
-
-		//Création des Services
-		Service jardinage = new Service("Jardinage",10);	
-		Service cuisiner = new Service("Cuisine",6);
-		Service coder = new Service("Coder", 25);
-		//Création liste de Service pour faciliter ajout aux Membres
-		ArrayList<Service> lServices = new ArrayList<Service>(); 
-		lServices.add(jardinage);/** il y a des services qui se répétent dans la liste, on garde qu'une examplaire */
-		lServices.add(cuisiner);
-		lServices.add(coder);
-		//ajout d'une service ou une liste de services à un Membre 
-		lea.getReseau().getMembre("paul").ajoutService(jardinage);
-		lea.getReseau().getMembre("lina").ajoutListeServices(lServices); 
-		lea.getReseau().getMembre("marie").ajoutListeServices(lServices);
-		//afficher les services d'un membre
-		lea.getReseau().getMembre("marie").afficheService();
