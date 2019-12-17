@@ -31,7 +31,10 @@ public class Test {
 		Tache tache1 = new Tache(jardinage,2,2);
 		Tache tache2 = new Tache(cuisiner,3,1.5);
 		Tache tache3 = new Tache(coder,1,5);
-		lea.getReseau().a
+		lea.getReseau().getListeTache().add(tache1);
+		lea.getReseau().getListeTache().add(tache2);
+		lea.getReseau().getListeTache().add(tache3);
+		//Un membre qui demande la validation d'une tache(ici tache1)
 		
 		System.out.print("end");
 		
