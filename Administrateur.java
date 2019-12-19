@@ -32,7 +32,7 @@ public final class Administrateur extends Membre {
             	this.effectuerTache(tConfirmee, lPart);
             	System.out.println(t.getNom() + " pour "+ tConfirmee.getBeneficiaire().getNom()+" est validée!"); //le message qui indique que la tache pourra bien être réalisée
             } else {
-                throw new Exception("ERROR: solde du demandeur insuffisant!");
+                throw new Exception("Le nombre de jetons du bénéficiaire est insuffisant");
             }
         } catch(Exception e) {
             throw new Exception(e.getMessage());
@@ -61,7 +61,7 @@ public final class Administrateur extends Membre {
         if(lMembres.size() == nbPart) {
             return lMembres;
         } else {
-            throw new Exception("ERROR: pas assez de membres pour compléter la tâche!");
+            throw new Exception("Il n'y  pas assez de membres pour effectuer la tâche");
         }
     }
 
