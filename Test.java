@@ -28,15 +28,33 @@ public class Test {
 		lea.getReseau().getMembre("lina").ajoutListeServices(lServices); 
 		lea.getReseau().getMembre("marie").ajoutListeServices(lServices);
 		//Création des taches
-		Tache tache1 = new Tache(jardinage,2,2);
-		Tache tache2 = new Tache(cuisiner,3,1.5);
-		Tache tache3 = new Tache(coder,1,5);
+		Tache tache1 = new Tache("tache1",jardinage,2,2);
+		Tache tache2 = new Tache("tache2",cuisiner,3,1.5);
+		Tache tache3 = new Tache("tache3",coder,1,5);
 		//Ajout des taches au réseau "echange"
-		lea.getReseau().getListeTache().add(tache1);
-		lea.getReseau().getListeTache().add(tache2);
-		lea.getReseau().getListeTache().add(tache3);
-		//Un membre qui demande la validation d'une tache(ici tache1)
-		
+		lea.getReseau().ajoutTache(tache1);
+		lea.getReseau().ajoutTache(tache2);
+		lea.getReseau().ajoutTache(tache3);
+		//Afficher les Taches proposées du réseau
+		lea.getReseau().afficherLesTaches();
+		//Un membre demande la validation d'une tache
+			//bénéficiaire = classe normale
+		lea.getReseau().getMembre("paul").demanderValid(tache1);
+		lea.getReseau().afficherLesMembresAvecInformations();
+			//bénéficiaire = classe demie
+		lea.getReseau().getMembre("marie").demanderValid(tache3);
+		lea.getReseau().afficherLesMembresAvecInformations();
+			//bénéficiaire = classe zero
+		lea.getReseau().getMembre("lina").demanderValid(tache3);
+		//Affiche la somme du jeton restant du membre
+//		System.out.println(lea.getReseau().getMembre("lina").getJeton());
+		//Affiche les informations de tous les membres du reseau sous forme de liste
+		lea.getReseau().afficherLesMembresAvecInformations();
+		//Un membre demande la validation d'une tache qui ne peut pas être executer(pas assez de membres)
+//		lea.getReseau().getMembre("lina").demanderValid(tache2);
+		//Afficher les Taches Confirmés
+//		lea.getReseau().afficherLesTachesConfirmees();
+		System.out.print(lea.getReseau().getMembre("lina").getClasse().getDiv());
 		System.out.print("end");
 		
 	}
