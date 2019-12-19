@@ -2,6 +2,7 @@ package pooSystem;
 
 import java.util.ArrayList;
 
+
 public class Reseau {
     private String nomRes; // Nom du reseau
     private Administrateur admin; // Administrateur du reseau
@@ -15,6 +16,8 @@ public class Reseau {
         this.nomRes = nomRes;
         this.lMembres = new ArrayList<Membre>();
         this.admin = null;
+        this.lTaches = new ArrayList<Tache>();
+        this.lTachesConf = new ArrayList<TacheConfirmee>();
     }
     //méthodes
     			//les gets
@@ -39,6 +42,30 @@ public class Reseau {
     		System.out.println(membre);
     	}
     }
+    public void afficherLesMembresAvecInformations() {
+    	System.out.println("-----Information des Membres à jour:-----");
+    	for(Membre membre: lMembres) {
+    		System.out.println(membre +" "+ membre.getClasse()+" "+ membre.getJeton());
+    	} 
+    	System.out.println("----vous ête au bout de la liste----");
+    }
+    public void afficherLesTaches() {
+    	for(Tache tache: lTaches) {
+    		System.out.println(tache.toString());
+    	}
+    }
+    public void afficherLesTachesConfirmees() {
+     	for(TacheConfirmee tacheConf: lTachesConf) {
+    		System.out.println(tacheConf.toString());
+    	}
+    }
+    			//ajout des taches/taches confirmees
+    public void ajoutTache(Tache tache) { // Ajout de tache
+    	this.lTaches.add(tache);
+    }
+    public void ajoutTacheConf(TacheConfirmee tacheConf) { // Ajout de tache confirmee
+    	this.lTachesConf.add(tacheConf);
+    }
     
     			//set les parametres
     public void	setAdmin(Administrateur admi){
@@ -50,22 +77,15 @@ public class Reseau {
     	this.lMembres.add(m);
     }
     
-    public void retraitMembre(String s) throws Exception { // retrait de membres
-        /** On doit d'abord localiser le membre dans la liste à partir de son pseudo*/
-        int emplacement;
-        try {
-            emplacement = this.findMembre(s);
-            this.lMembres.remove(emplacement);
-        } catch(Exception e) {
-            throw new Exception(e.getMessage());
-        }
+    public void retraitMembre(Membre m) {
+    	// retrait de membres
+    	lMembres.remove(m);
     }
 
     //  Remplace un membre par un autre 
     public void repMembre(String pseudo, Membre m) throws Exception {
         try {
             int index = findMembre(pseudo);
-            
             this.lMembres.remove(index);
             this.lMembres.add(index, m);
         } catch(Exception e) {
@@ -91,12 +111,12 @@ public class Reseau {
     }
 
     //  Renvoie le membre au pseudo paramétré
-    public Membre getMembre(String pseudo) throws Exception{
-        try {
-            int cible       = findMembre(pseudo);
-            return this.lMembres.get(cible);
-        } catch(Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-}
+    public Membre getMembre(String pseudo) {
+    	Membre membre = new Membre();
+    	for (int i=0;i< lMembres.size();i++) {
+			if (lMembres.get(i).getNom().equals(pseudo)) {
+    			membre = lMembres.get(i);
+    		}
+    	}
+		return membre;
+    } 
