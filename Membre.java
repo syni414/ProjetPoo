@@ -17,6 +17,10 @@ public class Membre {
 		this.lServices = new ArrayList<Service>();
 	    }
 	
+	public Membre() {
+		// TODO Auto-generated constructor stub
+	}
+
 	// méthodes
 				// les gets:
 	public String getNom(){
@@ -53,13 +57,13 @@ public class Membre {
     public void ajoutService(Service serv) { // Un membre peut ajouter des services à sa liste de services
         this.lServices.add(serv);
     }
-    /** ?la fonction de cette méthode est plutôt d'ajouter toutes les services de la liste du parametre à ce membre donc j'ai créé une autre méthode pour annoncer les services au réseau */
+ 
     public void ajoutListeServices(ArrayList<Service> listServ) { // ajouter une liste de services pour faciliter le procédure
         for(Service serv : listServ) {  
     	this.ajoutService(serv);
         }
     }
-    /** Annoncer ses services (je sais pas si c'est ce que tu voulais ^^)*/
+    // afficher la liste de services proposées du membre
     public void afficheService() {
     	for(Service serv : lServices) { 
     		System.out.println(serv);
@@ -68,10 +72,6 @@ public class Membre {
     
     //demande la validation d'une tache à l'administeateur 
     public void demanderValid(Tache t) throws Exception { // Un membre peut demander à l'administateur de valider une tâche
-        try {	
-        	this.res.getAdmin().valider(t,this);
-        } catch(Exception e) {
-        	throw new Exception(e.getMessage());
-        }
+    	this.res.getAdmin().valider(t,this);
     }
 }
