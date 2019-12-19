@@ -15,23 +15,22 @@ public final class Administrateur extends Membre {
 
 
     public void creationAjoutMembre(String nom, ClasseSociale classeSociale) {    //  Creation et ajout d'un nouveau membre dans le reseau
-        res.ajoutMembre(new Membre(nom, classeSociale));  /** petite modification*/
+        Membre membre = new Membre(nom, classeSociale);
+    	res.ajoutMembre(membre);  
+    	membre.setRes(this.getReseau());
     }
     
-    /** On prend tache et le beneficiaire(celui qui demande la tache) en parametre */
-    public boolean	valider(Tache t, Membre beneficiaire) throws Exception {
+    // validation de la tache demandée par utilisateur
+    public void	valider(Tache t, Membre beneficiaire) throws Exception {
         try {
             ArrayList<Membre> lPart = new ArrayList<Membre>(); 
-            lPart =	trouverParticipants(t.getNbMembres(), t.getService(), this.res);
-            
-            //	Si il y a assez de membres, on vérifie le solde du bénéficiaire, puis on effectue la tâche
-            /** Si le bénéficiaire a assez d'argent, on crée une tache confirmée de la tache
-             * 
-             */
-            if(beneficiaire.getJeton() - t.getPrix() >= 0) {
-            	TacheConfirmee tConfirmee = new TacheConfirmee(beneficiaire,t.getService(),t.getNbMembres(),t.getNbHeures(),lPart);
+            lPart =	trouverParticipants(t.getNbMembres(), t.getService(), this.res,beneficiaire);
+            //	Si il y a assez de membres qui proposent la service, on vérifie le solde du bénéficiaire, puis on effectue la tâche
+            //   Si le bénéficiaire a assez d'argent, on crée une tache confirmée de la tache
+             if(beneficiaire.getJeton() - t.getPrix() >= 0) {
+            	TacheConfirmee tConfirmee = new TacheConfirmee(t.getNom(),beneficiaire,t.getService(),t.getNbMembres(),t.getNbHeures(),lPart);
             	this.effectuerTache(tConfirmee, lPart);
-                return true;
+            	System.out.println(t.getNom() + " pour "+ tConfirmee.getBeneficiaire().getNom()+" est validée!"); //le message qui indique que la tache pourra bien être réalisée
             } else {
                 throw new Exception("ERROR: solde du demandeur insuffisant!");
             }
@@ -40,21 +39,25 @@ public final class Administrateur extends Membre {
         }
     }
     	// 0w0
-//    public void	valider(ArrayList<Tache> lTaches) throws Exception {
-//        for(Tache t : lTaches) {
-//            this.valider(t);
-//        }
-//    }   
-//  Parcours la liste de membres jusqu'à avoir trouvé n membres proposant un service s
-    private ArrayList<Membre>	trouverParticipants(int nbPart, Service s, Reseau res) throws Exception {
-        int                 i           = 0;
-        ArrayList<Membre>   lMembres    = new ArrayList<Membre>();
-
-        while(i < res.getMembres().size() && lMembres.size() < nbPart) {
-            if(res.getMembres().get(i).getServiceList().contains(s)) { lMembres.add(res.getMembres().get(i)); }
+//  Parcours la liste de membres jusqu'à avoir trouvé n membres proposant un service s(ps: on ne peut pas prendre le bénéficiaire lui-même)
+    private ArrayList<Membre>	trouverParticipants(int nbPart, Service s, Reseau res, Membre benef) throws Exception {
+        int i = 0;
+        int n = 0;
+        ArrayList<Membre>lMembres = new ArrayList<Membre>();
+        //on crée une nouvelle liste du reseau mais sans beneficiaire
+        ArrayList<Membre>MembresExceptBenef = new ArrayList <Membre>(); 
+        for (Membre m: res.getMembres()) {
+        	MembresExceptBenef.add(m);
+        }
+        while(MembresExceptBenef.get(n)!= benef) {
+        	n++;
+        }
+        MembresExceptBenef.remove(MembresExceptBenef.get(n));
+        //on ajoute les membres qui propose la service dans la liste de travailleurs pour la tache
+        while(i < MembresExceptBenef.size() && lMembres.size() < nbPart) {
+            if(MembresExceptBenef.get(i).getServiceList().contains(s)) { lMembres.add(MembresExceptBenef.get(i)); }
             i++;
         }
-
         if(lMembres.size() == nbPart) {
             return lMembres;
         } else {
@@ -62,7 +65,7 @@ public final class Administrateur extends Membre {
         }
     }
 
-    /* Effectue une tâche
+    /** Effectue une tâche
      *  Débite le bénéficiaire du prix de la tâche
      *  Crédite les membres participants à part égale
      *  
@@ -70,13 +73,15 @@ public final class Administrateur extends Membre {
      *  Dans le cas où la répartition du prix de la tâche parmi les membres
      *  participants laissait un reste, ce reste est crédité à l'administrateur.     */
     private void effectuerTache(TacheConfirmee t, ArrayList<Membre> lMembres) {
-        t.getBeneficiaire().debitSolde(t.getPrix());
-
-        int prixIndiv   = t.getPrix() / t.getNbMembres();
-        this.creditSolde(t.getPrix() % t.getNbMembres());
-
-        for(Membre m : lMembres) {
-            m.creditSolde(prixIndiv);
-        }
+    	//le prix final a payer de la tache en fonction de classe sociale du membre beneficiaire
+    	int prixFinal = (int)(t.getPrix()*t.getBeneficiaire().getClasse().getDiv()); 
+    	t.getBeneficiaire().debitSolde(prixFinal);
+    	//le salaire final reçu des membres qui réalisent la tache
+    	int prixIndividu = (prixFinal / lMembres.size());
+    	for(Membre m : lMembres) {
+            m.creditSolde(prixIndividu);
+        	}
+//        //on ajoute la tache à la liste de TacheConfirmée du réseau
+        this.getReseau().ajoutTacheConf(t);
     }
 }
